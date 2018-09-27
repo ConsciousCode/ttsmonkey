@@ -45,7 +45,7 @@ var d20boilerplate = function() {
 				if($3) return '<emphasis level="strong">';
 				if($4) return "</emphasis>";
 				if($5) return `<break strength="${
-						["x-weak", "weak", "medium", "strong", "x-strong"][$5.length - 2] || "x-strong"}"/>`;
+					["x-weak", "weak", "medium", "strong", "x-strong"][$5.length - 2] || "x-strong"}"/>`;
 			});
 	}
 
