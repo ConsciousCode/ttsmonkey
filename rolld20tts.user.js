@@ -86,16 +86,16 @@ var d20boilerplate = function() {
 		xhr.open("POST", `https://texttospeech.googleapis.com/v1/text:synthesize?key=${APIKEY}`);
 		xhr.send(JSON.stringify({
 			"voice": {
-					"name": `en-${accent}-${type}-${voice}`,
-					"languageCode": "en-US"
+				"name": `en-${accent}-${type}-${voice}`,
+				"languageCode": "en-US"
 			},
 			"input": {
-					"ssml": `<speak>${what}</speak>`,
+				"ssml": `<speak>${what}</speak>`,
 			},
 			"audioConfig": {
-					"audioEncoding": "mp3",
-					"pitch": pitch,
-					"speakingRate": speed
+				"audioEncoding": "mp3",
+				"pitch": pitch,
+				"speakingRate": speed
 			}
 		}));
 	}
@@ -110,7 +110,7 @@ var d20boilerplate = function() {
 
 	// Use say with those configurations
 	function finalSay(what) {
-			say(what, TYPE, VOICE, ACCENT, PITCH, SPEED);
+		say(what, TYPE, VOICE, ACCENT, PITCH, SPEED);
 	}
 	window.finalSay = finalSay;
 
@@ -129,7 +129,6 @@ var d20boilerplate = function() {
 	// Init, d20 variable exposed and views are loaded
 	function Init() {
 		console.log(NAME, "> Ready");
-		/* Ready to go, run your custom code here */
 
 		// Hook the incoming function which acts as the core updater for the chat
 		let inc = d20.textchat.incoming;
