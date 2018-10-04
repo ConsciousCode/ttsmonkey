@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			body {
+				width: 240px;
+			}
+
+			.invalid, :invalid{
+				border: 1px solid red;
+			}
+
+			.row {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				flex-direction: row;
+				margin-top: 3px;
+			}
+
+			.row label {
+				flex: 0 0 auto;
+				margin: 3px;
+			}
+
+			.row .rangepair, .row input {
+				flex: 1 1;
+			}
+
+			.rangepair {
+				display: flex;
+			}
+			.rangepair input[type="range"] {
+				flex: 4 1;
+			}
+			.rangepair input[type="text"] {
+				flex: 1 4;
+				width: 0;
+			}
+
+			.btn {
+				cursor: pointer;
+			}
+		</style>
+		<link rel="stylesheet" href="css/font-awesome.min.css"/>
+		<link rel="stylesheet" href="css/slider.css"/>
+	</head>
+	<body>
+		<div class="row">
+			<label>Volume</label>
+			<div id="volume"></div>
+		</div>
+		<div class="row">
+			<label>Engine</label>
+			<select id="engine" value="Native">
+				<option>Native</option>
+				<option>Google Standard</option>ont-awesome/
+				<option>Google WaveNet</option>
+			</select>
+		</div>
+		<div class="row">
+			<label>Profile</label>
+			<div class="row">
+				<select id="profile"></select>
+				<i id="newProfile" class="btn fa fa-plus fa-fw"></i>
+				<i id="rmProfile" class="btn fa fa-close fa-fw"></i>
+			</div>
+		</div>
+		<hr/>
+		<div id="config"></div>
+		<hr/>
+		<div class="row">
+			<label>Test</label>
+			<input id="test" value="This is how my voice sounds"/>
+		</div>
+
+		<script src="popup.js"></script>
+	</body>
+</html>

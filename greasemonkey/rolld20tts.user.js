@@ -16,23 +16,6 @@ var d20boilerplate = function() {
 	const NAME = "d20-boilerplate";
 	console.log(NAME,"> Injected");
 
-	// Voice Queue to make sure messages don't talk over each other
-	let vq = [];
-
-	function voicedone() {
-		vq.shift();
-		if(vq.length) {
-			vq[0]();
-		}
-	}
-
-	function vqadd(f) {
-		if(!vq.length) {
-			f();
-		}
-		vq.push(f);
-	}
-
 	// A few common cleanups for the messages
 	function cleanWhat(what) {
 		return what.
@@ -49,70 +32,9 @@ var d20boilerplate = function() {
 			});
 	}
 
-	// Usually uses a different voice so I used this as an error reporter
-	function nativeSay(what) {
-		let utt = new SpeechSynthesisUtterance(what);
-		utt.onend = voicedone;
-		vqadd(() => {
-			speechSynthesis.speak(utt);
-		});
+	function say(what) {
+		ttsmonkey_say(cleanWhat(what), false);
 	}
-	window.nativeSay = nativeSay;
-
-	const APIKEY = "YOUR KEY HERE";
-
-	// Fully parameterized Google TTS function
-	// This is separated to make testing the desired voice easier
-	function say(what, type, voice, accent, pitch, speed) {
-		// Format the message as SSML
-		what = cleanWhat(what);
-
-		let xhr = new XMLHttpRequest();
-		xhr.onload = function() {
-			let res = JSON.parse(this.responseText);
-			if(res.error) {
-				nativeSay(`Error ${res.error.code}: ${res.error.message}`);
-				throw res.error;
-			}
-			else {
-				let a = new Audio("data:audio/mp3;base64," + JSON.parse(this.responseText).audioContent);
-				a.onended = voicedone;
-				vqadd(() => {
-					a.play();
-				});
-			}
-		}
-		xhr.responseType = "application/json";
-		xhr.open("POST", `https://texttospeech.googleapis.com/v1/text:synthesize?key=${APIKEY}`);
-		xhr.send(JSON.stringify({
-			"voice": {
-				"name": `en-${accent}-${type}-${voice}`,
-				"languageCode": "en-US"
-			},
-			"input": {
-				"ssml": `<speak>${what}</speak>`,
-			},
-			"audioConfig": {
-				"audioEncoding": "mp3",
-				"pitch": pitch,
-				"speakingRate": speed
-			}
-		}));
-	}
-	window.say = say;
-
-	// Permanent configurations for the voice
-	const TYPE = "WaveNet"; // "Standard" or "WaveNet"
-	const VOICE = "A"; // A-F
-	const ACCENT = "US"; // US, GB, or AU
-	const PITCH = 0; // -20 to 20, 0 is no change
-	const SPEED = 1/1; // 1/4 to 4, use fractions for clarity
-
-	// Use say with those configurations
-	function finalSay(what) {
-		say(what, TYPE, VOICE, ACCENT, PITCH, SPEED);
-	}
-	window.finalSay = finalSay;
 
 	// Window loaded
 	window.onload = function() {
@@ -135,20 +57,20 @@ var d20boilerplate = function() {
 		d20.textchat.incoming = function(b, msg, ...rest) {
 			if(msg.who !== "system" && msg.playerid !== d20_player_id) {
 				if(msg.type === "emote") {
-					finalSay(msg.who + " " + msg.content);
+					say(msg.who + " " + msg.content);
 				}
 				else if(msg.type === "whisper") {
-					finalSay(`${msg.who} whispered <emphasis level="reduced">${msg.content}</emphasis>`);
+					say(`${msg.who} whispered <emphasis level="reduced">${msg.content}</emphasis>`);
 				}
 				else if(msg.type === "diceroll") {
 					let roll = JSON.parse(msg.content);
-					finalSay(`Rolling ${msg.sanitizedOrigRoll}. Total is ${roll.total}).`);
+					say(`Rolling ${msg.sanitizedOrigRoll}. Total is ${roll.total}).`);
 				}
 				else if(msg.type === "error") {
-					nativeSay("Error:" + msg.content);
+					say("Error: " + msg.content);
 				}
 				else {
-					finalSay(msg.who + " said " + msg.content);
+					say(msg.who + " said " + msg.content);
 				}
 			}
 
