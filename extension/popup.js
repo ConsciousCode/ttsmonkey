@@ -26,7 +26,7 @@ function option(value) {
 function registerOnChange(el, name, extra) {
 	el.addEventListener("change", function(ev) {
 		chrome.runtime.sendMessage({
-			cmd: "onChange", name, value: this.value
+			cmd: "change", name, value: this.value
 		});
 
 		if(extra) extra.call(this);

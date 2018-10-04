@@ -447,7 +447,7 @@ chrome.runtime.onMessage.addListener((msg, sender, respond) => {
 				break;
 			}
 
-			case "onChange":
+			case "change":
 				switch(msg.name) {
 					case "Volume":
 						core.volume = msg.value;
