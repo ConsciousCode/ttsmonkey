@@ -1,4 +1,4 @@
 #!/bin/bash
 
-rm -f ttsmonkey.crx
-zip ttsmonkey.crx *
+rm -f ttsmonkey.zip
+zip ttsmonkey.zip *
