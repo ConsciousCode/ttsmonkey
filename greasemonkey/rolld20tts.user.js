@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name roll20tts
-// @version 0.1
+// @version 2.0
 // @description roll20.net tts
 // @author ConsciousCode
 // @match *://roll20.net/*
@@ -38,8 +38,6 @@ var d20boilerplate = function() {
 
 	// Window loaded
 	window.onload = function() {
-		window.unwatch("d20");
-
 		var checkLoaded = setInterval(function() {
 			if (!$("#loading-overlay").is(":visible")) {
 				clearInterval(checkLoaded);
@@ -50,8 +48,7 @@ var d20boilerplate = function() {
 
 	// Init, d20 variable exposed and views are loaded
 	function Init() {
-		console.log(NAME, "> Ready");
-
+    let d20 = window.d20;
 		// Hook the incoming function which acts as the core updater for the chat
 		let inc = d20.textchat.incoming;
 		d20.textchat.incoming = function(b, msg, ...rest) {
@@ -76,65 +73,19 @@ var d20boilerplate = function() {
 
 			return inc.call(d20, b, msg, ...rest);
 		}
+		console.log(NAME, "> Ready");
 	}
 
-	/* object.watch polyfill by Eli Grey, http://eligrey.com */
-	if (!Object.prototype.watch) {
-		Object.defineProperty(Object.prototype, "watch", {
-			enumerable: false,
-			configurable: true,
-			writable: false,
-			value: function (prop, handler) {
-				var
-				oldval = this[prop],
-				newval = oldval,
-				getter = function () {
-					return newval;
-				},
-				setter = function (val) {
-					oldval = newval;
-					return (newval = handler.call(this, prop, oldval, val));
-				};
-
-				if (delete this[prop]) {
-					Object.defineProperty(this, prop, {
-						get: getter,
-						set: setter,
-						enumerable: true,
-						configurable: true
-					});
-				}
-			}
-		});
-	}
-
-	if (!Object.prototype.unwatch) {
-		Object.defineProperty(Object.prototype, "unwatch", {
-			enumerable: false,
-			configurable: true,
-			writable: false,
-			value: function (prop) {
-				var val = this[prop];
-				delete this[prop];
-				this[prop] = val;
-			}
-		});
-	}
-	/* end object.watch polyfill */
-
-	window.d20ext = {};
-	window.watch("d20ext", function (id, oldValue, newValue) {
-		console.log(NAME, "> Set Development");
-		newValue.environment = "development";
-		return newValue;
-	});
-
-	window.d20 = {};
-	window.watch("d20", function (id, oldValue, newValue) {
-		console.log(NAME, "> Obtained d20 variable");
-		newValue.environment = "production";
-		return newValue;
-	});
+  let lsgi = window.localStorage.getItem;
+  window.localStorage.getItem = new Proxy(lsgi, {
+    apply: function apply(target, self, args) {
+      if(args[0] === "WebRTC-AudioOutput") {
+        window.d20 = apply.caller.arguments[0];
+        console.log("> Obtained d20 variable");
+        window.localStorage.getItem = lsgi;
+      }
+    }
+  });
 };
 
 // Inject
