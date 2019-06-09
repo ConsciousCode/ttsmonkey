@@ -61,7 +61,7 @@ function handleMessage({type, who, msg}) {
 			say(`${msg.who} whispered <emphasis level="reduced">${msg.content}</emphasis>`);
 			break;
 		case "diceroll":
-			say(`Rolling ${msg.formula}. Total is ${msg.rolled}).`);
+			say(`${who} rolled ${msg.formula}. Total is ${msg.rolled}).`);
 			break;
 		case "system": break;
 		case "error":
@@ -95,12 +95,12 @@ function newMessage(el) {
 		}
 		else if (el.classList.contains("rollresult")) {
 			type = "diceroll";
-			who = "rng";
 			msg = {
-				formula: el.querySelector(".formula:not(.formattedFormula)"),
-				rolled: msg
+				formula: /^rolling\s+(.+)$/.exec(
+					el.querySelector(".formula:not(.formattedFormula)")[0].textContent
+				)[1],
+				rolled: el.getElementsByClassName("rolled")[0].textContent
 			};
-			return {type, who, msg};
 		}
 		else if (el.classList.contains("error")) {
 			type = "error";
