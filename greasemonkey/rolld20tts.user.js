@@ -86,6 +86,9 @@ function newMessage(el) {
 			type = "emote";
 		}
 		else if (el.classList.contains("general")) {
+			type = "general";
+		}
+		else if (el.classList.contains("diceroll")) {
 			type = "diceroll";
 			msg = {
 				formula: el.querySelector(".formula:not(.formattedFormula)"),
@@ -107,18 +110,18 @@ function newMessage(el) {
 	handleMessage(type, who, msg);
 }
 
-const version = 1;
+const version = 2;
 alert("Version " + version);
 
 let obroot = document.querySelector(".content[role=log]");
 console.log("Obroot:", obroot);
 
 let ob = new MutationObserver(ls => {
-	console.log("TTSMONKEY ls:", ls);
 	for (let mut of ls) {
 		for (let el of mut.addedNodes) {
 			if (el.classList.contains("message")) {
 				try {
+					console.log("New message:", el.textContent);
 					newMessage(el);
 				}
 				catch (e) {
