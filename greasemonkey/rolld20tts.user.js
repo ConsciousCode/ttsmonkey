@@ -107,7 +107,7 @@ function newMessage(el) {
 	handleMessage(type, who, msg);
 }
 
-let obroot = document.getElementsById("textchat");
+let obroot = document.getElementById("textchat");
 
 let ob = new MutationObserver(ls => {
 	for (let mut of ls) {
