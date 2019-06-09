@@ -95,7 +95,8 @@ function parseMessage(el) {
 		else if (el.classList.contains("emote")) {
 			type = "emote";
 			let m = /^(\S+)\s+(.+?)$/.exec(msg);
-			[last_who, msg] = m;
+			last_who = m[1];
+			msg = m[2];
 			return {type, who: last_who, msg};
 		}
 		else if (el.classList.contains("whisper")) {
