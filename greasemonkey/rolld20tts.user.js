@@ -58,7 +58,7 @@ function handleMessage({type, who, msg}) {
 			say(`${who} ${msg}`);
 			break;
 		case "whisper":
-			say(`${msg.who} whispered <emphasis level="reduced">${msg}</emphasis>`);
+			say(`${who} whispered <emphasis level="reduced">${msg}</emphasis>`);
 			break;
 		case "diceroll":
 			say(`${who} rolled ${msg.formula}. Total is ${msg.rolled}).`);
