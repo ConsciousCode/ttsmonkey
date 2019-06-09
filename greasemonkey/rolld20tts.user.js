@@ -107,13 +107,14 @@ function newMessage(el) {
 	handleMessage(type, who, msg);
 }
 
-const version = 0;
+const version = 1;
 alert("Version " + version);
 
-let obroot = document.getElementById("textchat");
+let obroot = document.querySelector(".content[role=log]");
 console.log("Obroot:", obroot);
 
 let ob = new MutationObserver(ls => {
+	console.log("TTSMONKEY ls:", ls);
 	for (let mut of ls) {
 		for (let el of mut.addedNodes) {
 			if (el.classList.contains("message")) {
