@@ -35,7 +35,7 @@ function say(what) {
 function* immediateTextNodes(el) {
 	for (let c of el.childNodes) {
 		if (c.nodeType === Node.TEXT_NODE) {
-			yield c;
+			yield c.textContent;
 		}
 	}
 }
