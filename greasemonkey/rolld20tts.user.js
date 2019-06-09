@@ -74,7 +74,6 @@ function handleMessage({type, who, msg}) {
 
 function parseBy(by) {
 	let m = /(?:\(from\s+(.+?)\)|(.+?)):/i.exec(by);
-	alert("parseBy: " + by + " / " + JSON.stringify(m));
 	return m[1] || m[2];
 }
 
@@ -120,10 +119,6 @@ function parseMessage(el) {
 		let by = el.getElementsByClassName("by")[0];
 		if(by) {
 			last_who = parseBy(by.textContent);
-		}
-
-		if(type === "whisper") {
-			alert(by.outerHTML);
 		}
 	}
 
