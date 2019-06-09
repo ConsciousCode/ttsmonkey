@@ -107,6 +107,9 @@ function newMessage(el) {
 	handleMessage(type, who, msg);
 }
 
+const version = 0;
+alert("Version " + version);
+
 let obroot = document.getElementById("textchat");
 console.log("Obroot:", obroot);
 
