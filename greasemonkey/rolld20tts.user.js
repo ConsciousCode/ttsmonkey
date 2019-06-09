@@ -73,7 +73,7 @@ function handleMessage({type, who, msg}) {
 }
 
 let last_who = null;
-function newMessage(el) {
+function parseMessage(el) {
 	let type, who, msg;
 
 	if (el.classList.contains("system")) {
@@ -97,7 +97,7 @@ function newMessage(el) {
 			type = "diceroll";
 			msg = {
 				formula: /^rolling\s+(.+)$/.exec(
-					el.querySelector(".formula:not(.formattedFormula)")[0].textContent
+					el.querySelector(".formula:not(.formattedFormula)").textContent
 				)[1],
 				rolled: el.getElementsByClassName("rolled")[0].textContent
 			};
@@ -127,6 +127,18 @@ let ob = new MutationObserver(ls => {
 	// Skip the first event, which contains the entire backlog
 	if(is_first) {
 		is_first = false;
+
+		// Loop backwards to seed last_who
+		for(let i = ls.length - 1; i >= 0; --i) {
+			for(let el of ls[i].addedNodes) {
+				let by = el.getElementsByClassName("by");
+				if(by) {
+					last_who = by.textContent.slice(0, -1);
+					return;
+				}
+			}
+		}
+		// Keep last_who as null
 		return;
 	}
 
@@ -134,7 +146,7 @@ let ob = new MutationObserver(ls => {
 		for (let el of mut.addedNodes) {
 			if (el.classList.contains("message") && !el.classList.contains("you")) {
 				try {
-					let msg = newMessage(el);
+					let msg = parseMessage(el);
 					handleMessage(msg);
 				}
 				catch (e) {
