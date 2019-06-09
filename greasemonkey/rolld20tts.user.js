@@ -110,7 +110,7 @@ function newMessage(el) {
 			throw new Error(`Unsupported message type(s): "${el.className}"`);
 		}
 
-		who = el.getElementsByClassName("by")[0].slice(0, -1);
+		who = el.getElementsByClassName("by")[0].textContent.slice(0, -1);
 	}
 
 	return {type, who, msg};
