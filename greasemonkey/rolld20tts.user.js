@@ -58,7 +58,7 @@ function handleMessage({type, who, msg}) {
 			say(`${who} ${msg}`);
 			break;
 		case "whisper":
-			say(`${msg.who} whispered <emphasis level="reduced">${msg.content}</emphasis>`);
+			say(`${msg.who} whispered <emphasis level="reduced">${msg}</emphasis>`);
 			break;
 		case "diceroll":
 			say(`${who} rolled ${msg.formula}. Total is ${msg.rolled}).`);
@@ -70,6 +70,11 @@ function handleMessage({type, who, msg}) {
 		default:
 			throw new Error(`Unknown message type "${type}"`);
 	}
+}
+
+function parseBy(by) {
+	let m = /(?:\(from\s+(.+?)\)|.+?):/i.exec(by);
+	return m[1] || m[2];
 }
 
 let last_who = null;
@@ -113,7 +118,7 @@ function parseMessage(el) {
 
 		let by = el.getElementsByClassName("by")[0];
 		if(by) {
-			last_who = by.textContent.slice(0, -1);
+			last_who = parseBy(by.textContent);
 		}
 	}
 
@@ -133,7 +138,7 @@ let ob = new MutationObserver(ls => {
 			for(let el of ls[i].addedNodes) {
 				let by = el.getElementsByClassName("by");
 				if(by) {
-					last_who = by.textContent.slice(0, -1);
+					last_who = parseBy(by.textContent);
 					return;
 				}
 			}
