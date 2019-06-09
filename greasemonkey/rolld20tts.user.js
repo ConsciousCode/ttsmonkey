@@ -93,7 +93,7 @@ function newMessage(el) {
 		else if (el.classList.contains("whisper")) {
 			type = "whisper";
 		}
-		else if (el.classList.contains("diceroll")) {
+		else if (el.classList.contains("rollresult")) {
 			type = "diceroll";
 			who = "rng";
 			msg = {
