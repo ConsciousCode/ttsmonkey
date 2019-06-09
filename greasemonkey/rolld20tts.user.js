@@ -6,6 +6,7 @@
 // @namespace https://github.com/ConsciousCode/ttsmonkey
 // @match *://roll20*.net/*
 // @match *://*.roll20*.net/editor/
+// @match *://*.roll20dev.net/editor/
 // @run-at document-start
 // ==/UserScript==
 
