@@ -94,6 +94,9 @@ function parseMessage(el) {
 		}
 		else if (el.classList.contains("emote")) {
 			type = "emote";
+			let m = /^(\S+)\s+(.+?)$/.exec(msg);
+			[last_who, msg] = m;
+			return {type, who: last_who, msg};
 		}
 		else if (el.classList.contains("whisper")) {
 			type = "whisper";
@@ -139,8 +142,14 @@ let ob = new MutationObserver(ls => {
 				let by = el.getElementsByClassName("by");
 				if(by) {
 					last_who = parseBy(by.textContent);
-					return;
 				}
+				else if(el.classList.contains("emote")) {
+					last_who = /^(\S+)/.exec(trailingText(el));
+				}
+				else {
+					continue;
+				}
+				return;
 			}
 		}
 		// Keep last_who as null
