@@ -48,7 +48,8 @@ function trailingText(el) {
 	return x;
 }
 
-function handleMessage(type, who, msg) {
+function handleMessage({type, who, msg}) {
+	console.log("HANDLING", type, who, msg);
 	switch (type) {
 		case "general":
 			say(`${who} said ${msg}`);
@@ -82,32 +83,37 @@ function newMessage(el) {
 	else {
 		msg = trailingText(el);
 
-		if (el.classList.contains("emote")) {
+		if (el.classList.contains("general")) {
+			type = "general";
+		}
+		else if (el.classList.contains("emote")) {
 			type = "emote";
 		}
-		else if (el.classList.contains("general")) {
-			type = "general";
+		else if (el.classList.contains("whisper")) {
+			type = "whisper";
 		}
 		else if (el.classList.contains("diceroll")) {
 			type = "diceroll";
+			who = "rng";
 			msg = {
 				formula: el.querySelector(".formula:not(.formattedFormula)"),
 				rolled: msg
 			};
-		}
-		else if (el.classList.contains("whisper")) {
-			type = "whisper";
-			who = el.getElementsByClassName("by")[0].slice(0, -1);
+			return {type, who, msg};
 		}
 		else if (el.classList.contains("error")) {
 			type = "error";
+			who = "error";
+			return {type, who, msg};
 		}
 		else {
 			throw new Error(`Unsupported message type(s): "${el.className}"`);
 		}
+
+		who = el.getElementsByClassName("by")[0].slice(0, -1);
 	}
 
-	handleMessage(type, who, msg);
+	return {type, who, msg};
 }
 
 const version = 2;
@@ -121,8 +127,8 @@ let ob = new MutationObserver(ls => {
 		for (let el of mut.addedNodes) {
 			if (el.classList.contains("message")) {
 				try {
-					console.log("New message:", el.textContent);
-					newMessage(el);
+					let msg = newMessage(el);
+					handleMessage(msg);
 				}
 				catch (e) {
 					alert(e);
