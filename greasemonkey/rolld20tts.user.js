@@ -92,11 +92,11 @@ function newMessage(el) {
 				rolled: msg
 			};
 		}
-		else if (el.classList.contains("whisper") {
+		else if (el.classList.contains("whisper")) {
 			type = "whisper";
 			who = el.getElementsByClassName("by")[0].slice(0, -1);
 		}
-		else if (el.classList.contains("error") {
+		else if (el.classList.contains("error")) {
 			type = "error";
 		}
 		else {
