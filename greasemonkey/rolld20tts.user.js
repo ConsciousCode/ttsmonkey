@@ -33,7 +33,7 @@ function say(what) {
 }
 
 function* immediateTextNodes(el) {
-	for (let c of el.children) {
+	for (let c of el.childNodes) {
 		if (c.nodeType === Node.TEXT_NODE) {
 			yield c;
 		}
@@ -122,7 +122,14 @@ function newMessage(el) {
 
 let obroot = document.querySelector(".content[role=log]");
 
+let is_first = true;
 let ob = new MutationObserver(ls => {
+	// Skip the first event, which contains the entire backlog
+	if(is_first) {
+		is_first = false;
+		return;
+	}
+
 	for (let mut of ls) {
 		for (let el of mut.addedNodes) {
 			if (el.classList.contains("message") && !el.classList.contains("you")) {
