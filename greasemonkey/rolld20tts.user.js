@@ -107,6 +107,9 @@ function newMessage(el) {
 	handleMessage(type, who, msg);
 }
 
+let obroot = document.getElementsByClassName("content")[0];
+console.log("Observation root:", obroot);
+
 let ob = new MutationObserver(ls => {
 	for (let mut of ls) {
 		for (let el of mut.addedNodes) {
@@ -120,9 +123,8 @@ let ob = new MutationObserver(ls => {
 			}
 		}
 	}
-}).observe(document.getElementsByClassName("content")[0], {
+}).observe(obroot, {
 	attributes: false,
 	childList: true,
 	subtree: false
 });
-console.log("TTSMonkey Observer created:", ob);
