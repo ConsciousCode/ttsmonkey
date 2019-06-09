@@ -120,6 +120,10 @@ function parseMessage(el) {
 		if(by) {
 			last_who = parseBy(by.textContent);
 		}
+
+		if(type === "whisper") {
+			alert(by.outerHTML);
+		}
 	}
 
 	return {type, who: last_who, msg};
