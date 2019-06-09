@@ -4,8 +4,7 @@
 // @description roll20.net tts
 // @author ConsciousCode
 // @namespace https://github.com/ConsciousCode/ttsmonkey
-// @match *://roll20.net/*
-// @match https://app.roll20.net/editor/
+// @match *://roll20*.net/*
 // @run-at document-start
 // ==/UserScript==
 
