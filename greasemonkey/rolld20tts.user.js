@@ -125,3 +125,4 @@ let ob = new MutationObserver(ls => {
 	childList: true,
 	subtree: false
 });
+console.log("TTSMonkey Observer created:", ob);
