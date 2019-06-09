@@ -72,6 +72,7 @@ function handleMessage({type, who, msg}) {
 	}
 }
 
+let last_who = null;
 function newMessage(el) {
 	let type, who, msg;
 
@@ -110,22 +111,16 @@ function newMessage(el) {
 			throw new Error(`Unsupported message type(s): "${el.className}"`);
 		}
 
-		if(!el.getElementsByClassName("by")[0]) {
-			alert("Missing 'who'\n\n" + el.outerHTML);
-		}
-		else {
-			who = el.getElementsByClassName("by")[0].textContent.slice(0, -1);
+		let by = el.getElementsByClassName("by")[0];
+		if(by) {
+			last_who = by.textContent.slice(0, -1);
 		}
 	}
 
-	return {type, who, msg};
+	return {type, who: last_who, msg};
 }
 
-const version = 2;
-alert("Version " + version);
-
 let obroot = document.querySelector(".content[role=log]");
-console.log("Obroot:", obroot);
 
 let ob = new MutationObserver(ls => {
 	for (let mut of ls) {
