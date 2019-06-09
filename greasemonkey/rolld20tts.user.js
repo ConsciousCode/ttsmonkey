@@ -7,7 +7,7 @@
 // @match *://roll20*.net/*
 // @match *://*.roll20*.net/editor/
 // @match *://*.roll20dev.net/editor/
-// @run-at document-start
+// @run-at document-end
 // ==/UserScript==
 
 'use strict';
@@ -108,6 +108,7 @@ function newMessage(el) {
 }
 
 let obroot = document.getElementById("textchat");
+console.log("Obroot:", obroot);
 
 let ob = new MutationObserver(ls => {
 	for (let mut of ls) {
