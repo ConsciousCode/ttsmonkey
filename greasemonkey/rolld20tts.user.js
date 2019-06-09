@@ -110,7 +110,12 @@ function newMessage(el) {
 			throw new Error(`Unsupported message type(s): "${el.className}"`);
 		}
 
-		who = el.getElementsByClassName("by")[0].textContent.slice(0, -1);
+		if(!el.getElementsByClassName("by")[0]) {
+			alert("Missing 'who'\n\n" + el.outerHTML);
+		}
+		else {
+			who = el.getElementsByClassName("by")[0].textContent.slice(0, -1);
+		}
 	}
 
 	return {type, who, msg};
@@ -125,7 +130,7 @@ console.log("Obroot:", obroot);
 let ob = new MutationObserver(ls => {
 	for (let mut of ls) {
 		for (let el of mut.addedNodes) {
-			if (el.classList.contains("message")) {
+			if (el.classList.contains("message") && !el.classList.contains("you")) {
 				try {
 					let msg = newMessage(el);
 					handleMessage(msg);
