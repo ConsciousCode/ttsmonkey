@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name websteamtts
-// @version 0.6
+// @version 0.7
 // @description TTS for Steam web chat client
 // @author ConsciousCode
 // @match *://steamcommunity.com/chat/
@@ -11,20 +11,11 @@
 unsafeWindow.eval("(" + (function() {
 	'use strict';
 	
-	console.log("websteamtts BEGIN v6");
+	console.log("websteamtts BEGIN v7");
 	
 	/* Hook into the page once it's actually loaded. */
 	function hook(chatHistory) {
 		console.log("websteamtts: hook");
-		
-		function parseMessage(el) {
-			const name = el.querySelector('.speakerName').textContent;
-			const timestamp = el.querySelector('.speakerTimeStamp').textContent;
-			const content = el.querySelector('.msgText').textContent;
-			const isCurrentUser = el.querySelector(".ChatSpeaker.isCurrentUser") !== null;
-			
-			return {name, timestamp, content, isCurrentUser};
-		}
 		
 		let initialLoad = true; // debounce initial load
 		new MutationObserver(muts => {
@@ -38,12 +29,24 @@ unsafeWindow.eval("(" + (function() {
 				if(mut.addedNodes.length == 0) continue;
 				
 				for(const node of mut.addedNodes) {
-					if(node.classList && node.classList.contains('ChatMessageBlock')) {
-						const msg = parseMessage(node);
-						console.log("websteamtts: msg", msg);
-						if(!msg.isCurrentUser) {
-							ttsmonkey_say(`${msg.name} says ${msg.content}`);
+					if(!node.classList) continue;
+					
+					if(node.classList.contains('ChatMessageBlock')) {
+						// Don't read our own messages
+						if(node.querySelector(".ChatSpeaker.isCurrentUser") !== null) {
+							continue;
 						}
+						
+						const name = el.querySelector('.speakerName').textContent;
+						
+						// Gather unread messages
+						const unread = [];
+						for(const msg of node.querySelectorAll(".msgText:not(.ttsmonkey-seen)")) {
+							msg.classList.add("ttsmonkey-seen");
+							unread.push(msg.textContent);
+						}
+						console.log("websteamtts: unread", unread);
+						ttsmonkey_say(`${name} says ${unread.join("\n")}`);
 					}
 				}
 			}
