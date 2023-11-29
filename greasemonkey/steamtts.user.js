@@ -11,7 +11,7 @@
 unsafeWindow.eval("(" + (function() {
 	'use strict';
 	
-	console.log("websteamtts BEGIN");
+	console.log("websteamtts BEGIN - new");
 	
 	function parseMessage(el) {
 		const name = el.querySelector('.speakerName').textContent;
