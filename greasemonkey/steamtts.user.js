@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name websteamtts
-// @version 0.4
+// @version 0.5
 // @description TTS for Steam web chat client
 // @author ConsciousCode
 // @match *://steamcommunity.com/chat/
@@ -11,7 +11,7 @@
 unsafeWindow.eval("(" + (function() {
 	'use strict';
 	
-	console.log("websteamtts BEGIN v4");
+	console.log("websteamtts BEGIN v5");
 	
 	/* Hook into the page once it's actually loaded. */
 	function hook(chatHistory) {
@@ -21,13 +21,19 @@ unsafeWindow.eval("(" + (function() {
 			const name = el.querySelector('.speakerName').textContent;
 			const timestamp = el.querySelector('.speakerTimeStamp').textContent;
 			const content = el.querySelector('.msgText').textContent;
-			const isCurrentUser = el.classList.contains('isCurrentUser');
+			const isCurrentUser = el.querySelector(".ChatSpeaker.isCurrentUser") === null;
 			
 			return {name, timestamp, content, isCurrentUser};
 		}
 		
+		let initialLoad = true; // debounce initial load
 		new MutationObserver(muts => {
-			console.log("websteamtts: mutation")
+			if(initialLoad) {
+				initialLoad = false;
+				return;
+			}
+			console.log("websteamtts: mutation");
+			
 			for(const mut of muts) {
 				if(mut.addedNodes.length == 0) continue;
 				
@@ -53,7 +59,6 @@ unsafeWindow.eval("(" + (function() {
 				if(chatHistory) {
 					// Element is now present, call your function
 					hook(chatHistory);
-					observer.disconnect();
 					break;
 				}
 			}
