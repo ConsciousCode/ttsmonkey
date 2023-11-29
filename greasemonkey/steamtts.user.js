@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name websteamtts
-// @version 0.5
+// @version 0.6
 // @description TTS for Steam web chat client
 // @author ConsciousCode
 // @match *://steamcommunity.com/chat/
@@ -11,7 +11,7 @@
 unsafeWindow.eval("(" + (function() {
 	'use strict';
 	
-	console.log("websteamtts BEGIN v5");
+	console.log("websteamtts BEGIN v6");
 	
 	/* Hook into the page once it's actually loaded. */
 	function hook(chatHistory) {
@@ -21,7 +21,7 @@ unsafeWindow.eval("(" + (function() {
 			const name = el.querySelector('.speakerName').textContent;
 			const timestamp = el.querySelector('.speakerTimeStamp').textContent;
 			const content = el.querySelector('.msgText').textContent;
-			const isCurrentUser = el.querySelector(".ChatSpeaker.isCurrentUser") === null;
+			const isCurrentUser = el.querySelector(".ChatSpeaker.isCurrentUser") !== null;
 			
 			return {name, timestamp, content, isCurrentUser};
 		}
@@ -40,6 +40,7 @@ unsafeWindow.eval("(" + (function() {
 				for(const node of mut.addedNodes) {
 					if(node.classList && node.classList.contains('ChatMessageBlock')) {
 						const msg = parseMessage(node);
+						console.log("websteamtts: msg", msg);
 						if(!msg.isCurrentUser) {
 							ttsmonkey_say(`${msg.name} says ${msg.content}`);
 						}
