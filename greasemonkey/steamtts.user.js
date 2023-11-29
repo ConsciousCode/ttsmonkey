@@ -22,6 +22,7 @@ unsafeWindow.eval("(" + (function() {
 	}
 	
 	const chatHistory = document.querySelector('.chatHistory');
+	console.log("websteamtts: chatHistory", chatHistory);
 	if(chatHistory) {
 		new MutationObserver(muts => {
 			console.log("websteamtts: mutation")
