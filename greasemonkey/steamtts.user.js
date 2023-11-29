@@ -13,48 +13,32 @@ unsafeWindow.eval("(" + (function() {
 	
 	console.log("websteamtts BEGIN");
 	
-	function say(what) {
-		ttsmonkey_say(what);
+	function parseMessage(el) {
+		const name = el.querySelector('.speakerName').textContent;
+		const timestamp = el.querySelector('.speakerTimeStamp').textContent;
+		const content = el.querySelector('.msgText').textContent;
+	
+		return {name, timestamp, content};
 	}
 	
-	function hook(obj, fn, hook) {
-		let v = obj[fn];
-		obj[fn] = function(...args) {
-			hook.apply(this, args);
-			return v.apply(this, args);
-		}
-	}
-	
-	let myui;
-	
-	Object.defineProperty(window, 'g_FriendsUIApp', {
-		get() { return myui; },
-		set(v) {
-			myui = v;
-	
-			hook(myui, "OnReadyToRender", () => {
-				console.log("websteamtts OnReadyToRender");
-	
-				let root = myui.UIStore.GetRootChatPerContextData();
-				let tabs = root.default_tabset.tabs;
-	
-				tabs.observe(change => {
-					console.log("websteamtts Tab changed");
-					for(let tab of change.added) {
-						hook(tab.m_chat, "OnReceivedNewMessage", msg => {
-							console.log("websteamtts New message");
-							let who = myui.FriendStore.GetFriend(msg.unAccountID);
-							say(
-								(who.nickname || who.persona.m_strPlayerName) +
-								" said " + msg.strMessage
-							);
-						});
+	if(chatHistory) {
+		new MutationObserver(muts => {
+			console.log("websteamtts: mutation")
+			for(const mut of muts) {
+				if(mut.addedNodes.length == 0) continue;
+				
+				for(const node of mut.addedNodes) {
+					if(node.classList && node.classList.contains('ChatMessageBlock')) {
+						const msg = parseMessage(node);
+						ttsmonkey_say(`${msg.name} says ${msg.content}`);
 					}
-				})
-			});
-		}
-	});
-	// g_FriendsUIApp.FriendStore.m_self
+				}
+			}
+		}).observe(chatHistory, { childList: true });
+	}
+	else {
+		throw new Error("websteamtts: `.chatHistory` not found");
+	}
 	
 	}).toString() + ")()");
 	
