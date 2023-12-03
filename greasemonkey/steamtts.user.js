@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name websteamtts
-// @version 0.8
+// @version 0.9
 // @description TTS for Steam web chat client
 // @author ConsciousCode
 // @match *://steamcommunity.com/chat/
@@ -11,7 +11,7 @@
 unsafeWindow.eval("(" + (function() {
 	'use strict';
 	
-	console.log("websteamtts BEGIN v8");
+	console.log("websteamtts BEGIN v9");
 	
 	/* Hook into the page once it's actually loaded. */
 	function hook(chatHistory) {
@@ -43,10 +43,15 @@ unsafeWindow.eval("(" + (function() {
 						const unread = [];
 						for(const msg of node.querySelectorAll(".msgText:not(.ttsmonkey-seen)")) {
 							msg.classList.add("ttsmonkey-seen");
-							unread.push(msg.textContent);
+							const content = msg.textContent.trim();
+							if(content) {
+								unread.push(msg.textContent);
+							}
 						}
-						console.log("websteamtts: unread", unread);
-						ttsmonkey_say(`${name} says ${unread.join("\n")}`);
+						if(unread.length > 0) {
+							console.log("websteamtts: unread", unread);
+							ttsmonkey_say(`${name} says ${unread.join("\n")}`);
+						}
 					}
 				}
 			}
