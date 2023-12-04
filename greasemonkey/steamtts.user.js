@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name websteamtts
-// @version 0.13
+// @version 0.14
 // @description TTS for Steam web chat client
 // @author ConsciousCode
 // @match *://steamcommunity.com/chat/
@@ -11,7 +11,7 @@
 unsafeWindow.eval("(" + (function() {
 	'use strict';
 	
-	console.log("websteamtts BEGIN v13");
+	console.log("websteamtts BEGIN v14");
 	
 	function read_messages(block) {
 		const messages = [];
@@ -49,7 +49,7 @@ unsafeWindow.eval("(" + (function() {
 					
 					if(node.classList.contains('ChatMessageBlock')) {
 						// Don't read our own messages
-						if(block.querySelector(".ChatSpeaker.isCurrentUser") !== null) {
+						if(node.querySelector(".ChatSpeaker.isCurrentUser") !== null) {
 							continue;
 						}
 						
