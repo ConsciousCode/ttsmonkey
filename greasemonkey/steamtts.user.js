@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name websteamtts
-// @version 0.10
+// @version 0.11
 // @description TTS for Steam web chat client
 // @author ConsciousCode
 // @match *://steamcommunity.com/chat/
@@ -11,7 +11,7 @@
 unsafeWindow.eval("(" + (function() {
 	'use strict';
 	
-	console.log("websteamtts BEGIN v10");
+	console.log("websteamtts BEGIN v11");
 	
 	/* Hook into the page once it's actually loaded. */
 	function hook(chatHistory) {
@@ -54,7 +54,7 @@ unsafeWindow.eval("(" + (function() {
 					}
 				}
 			}
-		}).observe(chatHistory, { childList: true });
+		}).observe(chatHistory, { childList: true, subtree: true });
 	}
 	
 	/* Wait for Steam React to load. */
