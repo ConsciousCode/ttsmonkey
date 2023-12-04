@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name websteamtts
-// @version 0.9
+// @version 0.10
 // @description TTS for Steam web chat client
 // @author ConsciousCode
 // @match *://steamcommunity.com/chat/
@@ -11,7 +11,7 @@
 unsafeWindow.eval("(" + (function() {
 	'use strict';
 	
-	console.log("websteamtts BEGIN v9");
+	console.log("websteamtts BEGIN v10");
 	
 	/* Hook into the page once it's actually loaded. */
 	function hook(chatHistory) {
@@ -31,27 +31,26 @@ unsafeWindow.eval("(" + (function() {
 				for(const node of mut.addedNodes) {
 					if(!node.classList) continue;
 					
-					if(node.classList.contains('ChatMessageBlock')) {
+					if(node.classList.contains('msg')) {
+						let block = node.parentNode;
+						
 						// Don't read our own messages
-						if(node.querySelector(".ChatSpeaker.isCurrentUser") !== null) {
+						if(block.querySelector(".ChatSpeaker.isCurrentUser") !== null) {
 							continue;
 						}
 						
-						const name = node.querySelector('.speakerName').textContent;
+						// Don't read messages that are already marked as read
+						if(node.classList.contains("ttsmonkey-seen")) {
+							continue;
+						}
 						
-						// Gather unread messages
-						const unread = [];
-						for(const msg of node.querySelectorAll(".msgText:not(.ttsmonkey-seen)")) {
-							msg.classList.add("ttsmonkey-seen");
-							const content = msg.textContent.trim();
-							if(content) {
-								unread.push(msg.textContent);
-							}
-						}
-						if(unread.length > 0) {
-							console.log("websteamtts: unread", unread);
-							ttsmonkey_say(`${name} says ${unread.join("\n")}`);
-						}
+						const text = node.textContent.trim();
+						if(text === "") continue;
+						
+						const name = parent.querySelector('.speakerName').textContent;
+						
+						console.log("websteamtts: msg", name, text);
+						ttsmonkey_say(`${name} says ${text}`);
 					}
 				}
 			}
