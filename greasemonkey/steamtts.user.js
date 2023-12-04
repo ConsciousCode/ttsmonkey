@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name websteamtts
-// @version 0.11
+// @version 0.12
 // @description TTS for Steam web chat client
 // @author ConsciousCode
 // @match *://steamcommunity.com/chat/
@@ -11,7 +11,23 @@
 unsafeWindow.eval("(" + (function() {
 	'use strict';
 	
-	console.log("websteamtts BEGIN v11");
+	console.log("websteamtts BEGIN v12");
+	
+	function read_messages(block) {
+		const messages = [];
+		for(const msg of block.querySelectorAll(".msgText:not(.ttsmonkey-seen)")) {
+			const text = msg.textContent.trim();
+			if(text === "") continue;
+			msg.classList.add("ttsmonkey-seen");
+			
+			messages.push(text);
+		}
+		
+		if(messages.length > 0) {
+			const name = block.querySelector('.speakerName').textContent.trim();
+			ttsmonkey_say(`${name} says ${messages.join(" ; ")}`);
+		}
+	}
 	
 	/* Hook into the page once it's actually loaded. */
 	function hook(chatHistory) {
@@ -31,30 +47,17 @@ unsafeWindow.eval("(" + (function() {
 				for(const node of mut.addedNodes) {
 					if(!node.classList) continue;
 					
-					if(node.classList.contains('msg')) {
-						let block = node.parentNode;
+					if(node.classList.contains('ChatMessageBlock')) {
+						read_messages(node);
 						
-						// Don't read our own messages
-						if(block.querySelector(".ChatSpeaker.isCurrentUser") !== null) {
-							continue;
-						}
-						
-						// Don't read messages that are already marked as read
-						if(node.classList.contains("ttsmonkey-seen")) {
-							continue;
-						}
-						
-						const text = node.textContent.trim();
-						if(text === "") continue;
-						
-						const name = parent.querySelector('.speakerName').textContent;
-						
-						console.log("websteamtts: msg", name, text);
-						ttsmonkey_say(`${name} says ${text}`);
+						// Read any future changes
+						new MutationObserver(
+							() => read_messages(node)
+						).observe(node, { childList: true });
 					}
 				}
 			}
-		}).observe(chatHistory, { childList: true, subtree: true });
+		}).observe(chatHistory, { childList: true });
 	}
 	
 	/* Wait for Steam React to load. */
